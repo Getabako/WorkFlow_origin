@@ -1,18 +1,7 @@
-# Instagram SNS投稿自動化ワークフロー テンプレート
+# Instagram SNS投稿自動化ワークフロー
 
-[![GitHub](https://img.shields.io/badge/GitHub-Template-blue?style=flat&logo=github)](https://github.com/Getabako/instagram-workflow-template)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-このテンプレートリポジトリは、Instagram投稿を自動化するための汎用的なワークフローです。
-**index.htmlとキャラクター・画像ルールを用意するだけで、AIが自動的に投稿カレンダーと画像を生成します。**
-
-## 🎯 このテンプレートでできること
-
-- 事業のホームページ（index.html）から自動的にビジネス情報を抽出
-- AI（Gemini）を使用して30日分の投稿カレンダーを自動生成
-- 画像ルールとキャラクター設定の自動生成
-- GitHub Actionsで完全自動化（手動実行も可能）
-- 複数の事業・プロジェクトで再利用可能
+このフォルダには、Instagram投稿を自動化するための汎用的なワークフローが含まれています。
+index.htmlとキャラクター・画像ルールを用意するだけで、自動的に投稿カレンダーと画像を生成できます。
 
 ## 📋 概要
 
@@ -26,42 +15,34 @@
 6. **画像合成**: テキストと画像を組み合わせてInstagram用の投稿画像を作成
 7. **既存投稿の考慮**: 過去の投稿内容を加味して重複を避けた新しい投稿を生成
 
-## 🚀 クイックスタート
+## 🚀 セットアップ手順
 
-### 1. このテンプレートを使用
+### 1. このフォルダを新しいプロジェクトに配置
 
-**方法A: GitHubでテンプレートとして使用（推奨）**
-1. このリポジトリの「Use this template」ボタンをクリック
-2. 新しいリポジトリ名を入力（例: `my-business-instagram`）
-3. リポジトリを作成
+**このWorkFlow_originフォルダごと**新しいプロジェクトのリポジトリにコピーします。
 
-**方法B: 既存プロジェクトに追加**
 ```bash
-# 既存のプロジェクトリポジトリで実行
-cd your-existing-project
-git clone https://github.com/Getabako/instagram-workflow-template.git WorkFlow_origin
-cd WorkFlow_origin
-rm -rf .git  # テンプレートのGit履歴を削除
+# 方法1: WorkFlow_originフォルダごとコピー
+cp -r WorkFlow_origin /path/to/your/new-project/
+
+# 方法2: GitHubから直接クローン（このフォルダが既にGitHubにある場合）
+git clone <your-repository-url>
+cd <repository-name>/WorkFlow_origin
 ```
 
-### 2. 作業ディレクトリに移動
+### 2. WorkFlow_originフォルダ内で作業
+
+**重要: 以降の全ての作業はWorkFlow_originフォルダ内で行います**
 
 ```bash
-cd WorkFlow_origin  # クローンした場合
-# または
-cd your-new-repository  # テンプレートから作成した場合（既にルートにいます）
+cd WorkFlow_origin
 ```
 
 ### 3. 必要なファイルを配置
 
 #### a. index.html（必須）
-リポジトリのルートに`index.html`を配置してください。
+WorkFlow_originフォルダのルートに`index.html`を配置してください。
 このファイルから事業内容が自動的に抽出されます。
-
-```bash
-# 事業のホームページをindex.htmlとして配置
-cp /path/to/your/homepage.html index.html
-```
 
 #### b. キャラクター設定（簡単！画像を配置するだけ）
 
@@ -128,54 +109,70 @@ name,location,characters,lighting,style,additional
 #### d. ブログ記事（オプション）
 `posts/`フォルダにブログ記事のHTMLファイルを配置すると、内容が参考にされます。
 
-### 4. Gemini APIキーの取得
+### 4. 環境変数の設定
 
-**APIキーの取得方法:**
+`.env`ファイルをWorkFlow_originフォルダのルートに作成し、以下を設定：
+
+```env
+# Gemini API Key（必須）
+GEMINI_API_KEY=your_gemini_api_key_here
+
+# カレンダー生成日数（デフォルト: 30）
+CALENDAR_DAYS=30
+```
+
+**Gemini APIキーの取得方法:**
 1. [Google AI Studio](https://makersuite.google.com/app/apikey)にアクセス
 2. 「Get API Key」をクリック
-3. 生成されたAPIキーをコピー（後でGitHub Secretsに設定します）
+3. 生成されたAPIキーをコピーして`.env`ファイルに貼り付け
 
-### 5. GitHub Actionsのセットアップ
+### 5. 依存パッケージのインストール
+
+WorkFlow_originフォルダ内で実行：
 
 ```bash
-# セットアップスクリプトを実行（リポジトリのルートで実行）
+npm install
+```
+
+## 🤖 GitHub Actionsでの自動実行（推奨）
+
+### セットアップ手順
+
+新しいリポジトリでGitHub Actionsを使って自動実行する場合：
+
+**ステップ1: WorkFlow_originフォルダを配置**
+```bash
+# リポジトリのルートにWorkFlow_originフォルダを配置
+cp -r WorkFlow_origin /path/to/your/new-repository/
+cd /path/to/your/new-repository
+```
+
+**ステップ2: GitHub Actionsワークフローをセットアップ**
+```bash
+# セットアップスクリプトを実行
+cd WorkFlow_origin
 ./setup-github-actions.sh
 ```
 
 このスクリプトは自動的に：
-- `.github/workflows/` ディレクトリを作成
+- リポジトリのルートに `.github/workflows/` ディレクトリを作成
 - ワークフローファイルをコピー
 
-### 6. GitHub SecretsにAPIキーを設定
-
+**ステップ3: Gemini APIキーを設定**
 1. GitHubリポジトリの `Settings` > `Secrets and variables` > `Actions` へ移動
 2. `New repository secret` をクリック
 3. 名前: `GEMINI_API_KEY`
-4. 値: 先ほどコピーしたGemini APIキーを貼り付け
-5. `Add secret` をクリック
+4. 値: あなたのGemini APIキーを貼り付け
 
-### 7. 依存パッケージのインストール（ローカル実行する場合のみ）
-
-ローカルでワークフローを実行する場合は、以下のコマンドを実行：
-
+**ステップ4: プッシュ**
 ```bash
-npm install
-
-# .envファイルを作成
-cp .env.example .env
-# .envファイルにGEMINI_API_KEYを記入
-```
-
-### 8. リポジトリにプッシュ
-
-```bash
-# 変更をコミット
-git add .
-git commit -m "Setup Instagram content generation workflow"
+cd ..  # リポジトリのルートに戻る
+git add .github/workflows/content-generation.yml WorkFlow_origin/
+git commit -m "Add Instagram content generation workflow"
 git push
 ```
 
-## 🤖 GitHub Actionsの使い方
+### GitHub Actionsワークフローの使い方
 
 ワークフローは以下の3つの方法で実行されます：
 
@@ -188,9 +185,9 @@ git push
 
 2. **スケジュール実行**: 毎月1日の午前9時（JST）に自動実行
 
-3. **自動実行**: `index.html` を更新してプッシュすると自動実行
+3. **自動実行**: `WorkFlow_origin/index.html` を更新してプッシュすると自動実行
 
-### 生成結果の取得方法
+### 生成結果の取得
 
 実行完了後、Artifactsから以下をダウンロード可能：
 - `calendar-csv`: 投稿カレンダー（CSV形式）
@@ -299,38 +296,27 @@ your-new-project/                  # 新しいプロジェクトのルート
 
 ## 💡 使用例
 
-### 例1: プログラミング塾の場合
+### 例1: プログラミング塾の場合（自動生成を活用）
 
-1. このテンプレートから新しいリポジトリを作成
-2. プログラミング塾のホームページを`index.html`として配置
-3. 講師の写真を`character/山﨑琢己/山﨑琢己.png`として配置
-4. `./setup-github-actions.sh` を実行
-5. GitHub SecretsにGEMINI_API_KEYを設定
-6. 変更をプッシュ
-7. GitHub Actionsで「Run workflow」をクリック
+1. WorkFlow_originフォルダを新しいプロジェクトにコピー
+2. WorkFlow_originフォルダ内で作業: `cd WorkFlow_origin`
+3. プログラミング塾のホームページを`index.html`として配置
+4. 講師の写真を`character/山﨑琢己/山﨑琢己.png`として配置
+5. `npm install`を実行
+6. `npm run setup`を実行（画像ルールとキャラクターCSVが自動生成される）
+7. `npm run generate-calendar`を実行
 8. 30日分の投稿カレンダーが自動生成される
 
-### 例2: 複数の事業で使い回す場合
+### 例1-2: 手動でCSVを作成する場合
 
-**事業A（プログラミング塾）:**
-```bash
-git clone https://github.com/Getabako/instagram-workflow-template.git programming-school-instagram
-cd programming-school-instagram
-# index.htmlと画像を配置
-./setup-github-actions.sh
-# プッシュして実行
-```
-
-**事業B（デザインスタジオ）:**
-```bash
-git clone https://github.com/Getabako/instagram-workflow-template.git design-studio-instagram
-cd design-studio-instagram
-# index.htmlと画像を配置
-./setup-github-actions.sh
-# プッシュして実行
-```
-
-同じテンプレートを複数のプロジェクトで独立して使用できます。
+1. WorkFlow_originフォルダを新しいプロジェクトにコピー
+2. WorkFlow_originフォルダ内で作業: `cd WorkFlow_origin`
+3. プログラミング塾のホームページを`index.html`として配置
+4. 講師のキャラクター設定を`character/山﨑琢己/山﨑琢己.csv`に手動で作成
+5. 教室の雰囲気ルールを`imagerule/教室風景.csv`に手動で作成
+6. `npm install`を実行
+7. `npm run workflow`を実行
+8. 30日分の投稿カレンダーが自動生成される
 
 ### 例2: 既存の投稿を考慮した新しい投稿の生成
 
